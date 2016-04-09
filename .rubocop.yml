@@ -1,0 +1,6 @@
+AllCops:
+  Exclude:
+    - "Rakefile"
+
+Metrics/LineLength:
+  Max: 120

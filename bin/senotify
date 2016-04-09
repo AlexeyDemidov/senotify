@@ -1,0 +1,96 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'methadone'
+require 'awesome_print'
+require 'senotify.rb'
+require 'dotenv'
+
+# default application class
+class App
+  include Methadone::Main
+  include Methadone::CLILogging
+
+  Dotenv.load
+
+  RubyStackoverflow.configure do |config|
+    if ENV.key?('SE_CLIENT_KEY') && ENV.key?('SE_ACCESS_TOKEN')
+      config.client_key = ENV['SE_CLIENT_KEY']
+      config.access_token = ENV['SE_ACCESS_TOKEN']
+    end
+  end
+
+  main do # Add args you want: |like,so|
+    options[:refresh] ||= 300
+
+    fromdate = {}
+    options[:sites].each do |site|
+      time = Time.now
+      fromdate[site] = time.to_i - 600
+    end
+
+    loop do
+      options[:sites].each do |site|
+        puts format('Searching %s', site)
+        loop do
+          response = Senotify.get_questions(site, fromdate[site])
+          if response.nil? || response.data.nil?
+            puts 'no data'
+            ap response
+            break
+          end
+          response.data.each do |q|
+            fromdate[site] = Time.parse(q.creation_date).to_i + 1
+
+            next unless Senotify.check_tags(options[:include],
+                                            options[:exclude],
+                                            q.tags)
+            Senotify.print_question(q, site, options[:notify])
+          end
+          break unless response.has_more
+        end
+      end
+      puts format('sleeping for %d seconds', options[:refresh])
+      sleep(options[:refresh])
+    end
+  end
+
+  # supplemental methods here
+
+  # Declare command-line interface here
+
+  description 'Searches Stack Exchange site for the new questions and sends system notifications'
+  #
+  # Accept flags via:
+  # on("--flag VAL","Some flag")
+  # options[flag] will contain VAL
+
+  on('-s', '--sites SITE,SITE,SITE', Array, 'Sites to monitor, one of serverfault | stackoverflow | superuser')
+  on('-r', '--refresh SECONDS', Integer, 'Refresh rate in seconds, default to 300 seconds')
+  on('-i', '--include TAGS', Array, 'Only include question that contains these tags')
+  on('-e', '--exclude TAGS', Array, 'Exclude question that contains these tags ')
+  on('-n', '--notify', 'Enable system notifications')
+  # on('-v','--verbose', 'Show information regarding number of question found')
+
+  #
+  # Specify switches via:
+  # on("--[no-]switch","Some switch")
+  #
+  # Or, just call OptionParser methods on opts
+  #
+  # Require an argument
+  # arg :some_arg
+  #
+  # # Make an argument optional
+  # arg :optional_arg, :optional
+
+  version Senotify::VERSION
+
+  use_log_level_option toggle_debug_on_signal: 'USR1'
+
+  Signal.trap('SIGINT') do
+    exit 0
+  end
+
+  go!
+end
