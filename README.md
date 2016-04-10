@@ -15,6 +15,10 @@ install as gem:
 
     $ gem install senotify
 
+Use my forked version of [ruby-stackoverflow gem][2] to access sites other than stackoverflow.
+
+[2]:https://github.com/AlexeyDemidov/ruby-stackoverflow
+
 ## Usage
 
 ```
