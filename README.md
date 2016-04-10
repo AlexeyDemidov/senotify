@@ -1,5 +1,7 @@
 # Senotify
 
+[![Dependency Status](https://gemnasium.com/badges/github.com/AlexeyDemidov/senotify.svg)](https://gemnasium.com/github.com/AlexeyDemidov/senotify)
+
 This script fetches a list of the new questions from a Stack Exchange website,
 prints them out to terminal and sends desktop system notification to user.
 
