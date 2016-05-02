@@ -29,7 +29,7 @@ GEM
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     coderay (1.1.1)
-    contracts (0.13.0)
+    contracts (0.14.0)
     cucumber (2.3.3)
       builder (>= 2.1.2)
       cucumber-core (~> 1.4.0)
@@ -53,7 +53,7 @@ GEM
     methadone (1.9.2)
       bundler
     method_source (0.8.2)
-    multi_json (1.11.2)
+    multi_json (1.11.3)
     multi_test (0.1.2)
     multi_xml (0.5.5)
     power_assert (0.2.7)
