@@ -25,7 +25,7 @@ EOF
   spec.add_runtime_dependency 'htmlentities', '~> 4.3.4'
   spec.add_runtime_dependency 'ruby-stackoverflow'
   spec.add_runtime_dependency 'dotenv'
-  spec.add_development_dependency 'bundler', '~> 1.0'
+  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '>= 12.3.3'
   spec.add_development_dependency('rdoc')
   spec.add_development_dependency('aruba')
